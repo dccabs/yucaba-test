@@ -114,6 +114,7 @@ export default function Home() {
           <button onClick={handleEdit} className="p-4 border-gray-200 border">
             Sample Edit todo endpoint called here
           </button>
+          <p>You can put your test on the /test page.</p>
         </div>
       </main>
     </>
