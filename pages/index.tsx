@@ -93,8 +93,14 @@ export default function Home() {
           </p>
           <p>
             Please install and use the{" "}
-            <span className="text-blue-600">React Query</span> library to manage
-            your endpoints and state.
+            <a
+              className="text-blue-600"
+              href="https://tanstack.com/query/latest/docs/react/quick-start"
+              target="_blank"
+            >
+              React Query
+            </a>{" "}
+            library to manage your endpoints and state.
           </p>
           <p>
             The following endpoints/serverless functions can be used to create
