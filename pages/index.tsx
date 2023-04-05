@@ -55,9 +55,30 @@ export default function Home() {
             Please use this repo to construct a TODO app with Next.js and
             Serverless functions.
           </p>
+          <p>The application should consist of the following</p>
+          <ul>
+            <li>
+              A text field where a user can enter a todo. The todo can be
+              anything like feed the dog, wash the car, etc. When the user
+              clicks the submit or hits enter it should submit the new todo
+            </li>
+            <li>
+              Below the text box should be a list of todos that are already in
+              the DB. There should be a way to edit and delete the todo
+            </li>
+            <li>
+              If there is an error, then the user should be notified somehow
+            </li>
+            <li>
+              There should be loading indicators or text letting the user know
+              something is loading.
+            </li>
+          </ul>
           <p>
             Please use <span className="text-blue-600">Tailwind UI</span>{" "}
-            components to construct the following application.
+            components to construct the following application. Use your best
+            judgement of what components to use. If you have any questions,
+            please ask.
           </p>
           <p>
             You can add yourself to my tailwind UI component account by
