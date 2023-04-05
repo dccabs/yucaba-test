@@ -1,11 +1,44 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const handleAdd = async () => {
+    const test = await fetch("/api/todos/add", {
+      method: "POST",
+      body: JSON.stringify({ text: "test" }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (test.ok) {
+      console.log("success");
+    }
+    if (test.status === 401) {
+      console.log("error");
+    }
+  };
+
+  const handleEdit = async () => {
+    const test = await fetch("/api/todos/edit", {
+      method: "POST",
+      body: JSON.stringify({ id: 1, text: "edit this" }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (test.ok) {
+      console.log("success");
+    }
+    if (test.status === 401) {
+      console.log("error");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -14,110 +47,75 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
+      <main className="max-w-5xl mx-auto p-10 space-y-4">
+        <button></button>
+        <h1 className="text-3xl font-bold">Yucaba Test</h1>
+        <div className="space-y-4">
           <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
+            Please use this repo to construct a TODO app with Next.js and
+            Serverless functions.
           </p>
-          <div>
+          <p>
+            Please use <span className="text-blue-600">Tailwind UI</span>{" "}
+            components to construct the following application.
+          </p>
+          <p>
+            You can add yourself to my tailwind UI component account by
+            following this link:{" "}
             <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+              className="text-blue-500 underline cursor-pointer"
               target="_blank"
-              rel="noopener noreferrer"
+              href="https://tailwindui.com/teams/invite/1mpK8w8oKETlbsRqtDcyky2V1Yxy2DHj"
             >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
+              Tailwind UI
             </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
+          </p>
+          <p>
+            Please install and use the{" "}
+            <span className="text-blue-600">React Query</span> library to manage
+            your endpoints and state.
+          </p>
+          <p>
+            The following endpoints/serverless functions can be used to create
+            your todo app. You can find them in the api directory of this repo.
+          </p>
+          <ul className="my-4">
+            <li>
+              /api/todos/add payload is{" "}
+              {`{
+                  text: string
+                }`}
+            </li>
+            <li>
+              /api/todos/delete payload is{" "}
+              {`{
+                  id: number
+                }`}
+            </li>
+            <li>
+              /api/todos/edit payload is{" "}
+              {`{
+                  id: number,
+                  text: string
+                }`}
+            </li>
+            <li>/api/todos/get - no payload needed</li>
+            <li>
+              ** All endpoints are using the <strong>POST</strong> method
+            </li>
+          </ul>
+          <p>
+            Please spend up to 3 hours on the project. If you have any questions
+            email me at dan@yucaba.com
+          </p>
+          <button onClick={handleAdd} className="p-4 border-gray-200 border">
+            Sample Add todo endpoint called here
+          </button>
+          <button onClick={handleEdit} className="p-4 border-gray-200 border">
+            Sample Edit todo endpoint called here
+          </button>
         </div>
       </main>
     </>
-  )
+  );
 }
