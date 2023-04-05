@@ -56,7 +56,7 @@ export default function Home() {
             Serverless functions.
           </p>
           <p>The application should consist of the following</p>
-          <ul>
+          <ul className="list-disc">
             <li>
               A text field where a user can enter a todo. The todo can be
               anything like feed the dog, wash the car, etc. When the user
@@ -100,7 +100,7 @@ export default function Home() {
             The following endpoints/serverless functions can be used to create
             your todo app. You can find them in the api directory of this repo.
           </p>
-          <ul className="my-4">
+          <ul className="my-4 list-disc">
             <li>
               /api/todos/add payload is{" "}
               {`{
