@@ -1,24 +1,43 @@
-import { supabase } from "../../../utils/initSupabase";
+import {
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { supabase } from '../../../utils/initSupabase';
 
-const addTodo = async (req, res) => {
-  const { text } = req.body;
+import { TODOS_CACHE_KEY } from './get';
 
+const addTodo = async (text: string) => {
   if (!text) {
-    return res.status(401).json({ error: { message: "must have text" } });
+    throw new Error('must have text');
   }
 
   const { data: todo, error } = await supabase
-    .from("todos")
+    .from('todos')
     .insert([{ text }])
-    .select("*");
+    .select('*');
 
   if (todo) {
-    return res.status(200).json({ todo: todo[0] });
+    return todo[0];
   }
 
   if (error) {
-    return res.status(401).json({ error: { message: error.message } });
+    throw new Error(error.message);
   }
 };
 
-export default addTodo;
+export const useAddTodoMutation = (
+  onSuccess: (data: any) => void,
+  onError: (e: any) => void,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: addTodo,
+    onSuccess: data => {
+      queryClient.invalidateQueries({
+        queryKey: [TODOS_CACHE_KEY],
+      });
+      onSuccess(data);
+    },
+    onError,
+  });
+}
