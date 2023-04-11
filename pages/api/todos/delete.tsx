@@ -1,41 +1,27 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../../../utils/initSupabase';
+import { supabase } from "../../../utils/initSupabase";
 
-import { TODOS_CACHE_KEY } from './get';
+const deleteTodo = async (req, res) => {
+    const { id } = req.body;
 
-const deleteTodo = async (id: string | number) => {
-    if (!id) {
-        throw new Error("must have id");
+    if (id) {
+        return res
+            .status(401)
+            .json({ error: { message: "must have id" } });
     }
 
     const { data: todo, error } = await supabase
         .from("todos")
         .delete()
-        .eq("id", id)
-        .select("*");
+        .eq('id', id)
+        .select('*');
 
     if (todo) {
-        return todo;
+        return res.status(200).json({ todo: todo });
     }
 
     if (error) {
-        throw new Error(error.message);
+        return res.status(401).json({ error: { message: error.message } });
     }
-}
+};
 
-export const useDeleteTodoMutation = (
-    onSuccess: (data: any) => void,
-    onError: (e: any) => void,
-) => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: deleteTodo,
-        onSuccess: data => {
-            queryClient.invalidateQueries({
-                queryKey: [TODOS_CACHE_KEY],
-            });
-            onSuccess(data);
-        },
-        onError,
-    });
-}
+export default deleteTodo;

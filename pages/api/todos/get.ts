@@ -1,18 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
-import { supabase } from '../../../utils/initSupabase';
+import { supabase } from "../../../utils/initSupabase";
 
-export const TODOS_CACHE_KEY = 'todos';
+const getTodos = async (req, res) => {
+  const { data: todos, error } = await supabase.from("todos").select("*");
 
-export const useGetTodos = () => {
-  return useQuery({
-    queryKey: [TODOS_CACHE_KEY],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('todos').select('*');
-      if (error) {
-        throw new Error(error.message);
-      }
-      return data;
-    }
-  })
+  if (todos) {
+    return res.status(200).json({ todos });
+  }
+
+  if (error) {
+    return res.status(401).json({ error: { message: error.message } });
+  }
 };
 
+export default getTodos;
