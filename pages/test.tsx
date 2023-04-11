@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   PlusIcon,
   ExclamationCircleIcon,
@@ -9,12 +10,14 @@ import {
 import dayjs from 'dayjs';
 import { useSnackbar } from 'notistack';
 
-import { useAddTodoMutation } from './api/todos/add';
-import { useEditTodoMutation } from './api/todos/edit';
-import { useDeleteTodoMutation } from './api/todos/delete';
-import { useGetTodos } from './api/todos/get';
-
 import Loading from '@/components/Loading/Loading';
+
+type EditTodoType = {
+  id: number,
+  text: string,
+}
+
+const TODOS_CACHE_KEY = 'todos';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
@@ -28,36 +31,116 @@ export default function Test() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: todosData, isLoading, fetchStatus, isError } = useGetTodos();
+  const queryClient = useQueryClient();
 
-  const onError = (error: string) => enqueueSnackbar(error, { variant: 'error' });
+  const onError = (error: string) => {
+    setLoading(false);
+    enqueueSnackbar(error, { variant: 'error' });
+  }
 
-  const addTodo = useAddTodoMutation(
-    () => {
+  const { data: todosData, isLoading, fetchStatus, isError } = useQuery({
+    queryKey: [TODOS_CACHE_KEY],
+    queryFn: async () => {
+      const api = await fetch("/api/todos/get", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (api.ok) {
+        const data = await api.json();
+        return data?.todos;
+      }
+      if (api.status === 401) {
+        throw "Error 401";
+      }
+    }
+  });
+
+  const addTodo = useMutation({
+    mutationFn: async (text: string) => {
+      const api = await fetch("/api/todos/add", {
+        method: "POST",
+        body: JSON.stringify({ text: text }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (api.ok) {
+        console.log('add success');
+      }
+      if (api.status === 401) {
+        throw "Error 401";
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [TODOS_CACHE_KEY]
+      })
       setNewTodo('');
       setLoading(false);
       enqueueSnackbar('Successfully added todo', { variant: 'success' });
     },
     onError,
-  );
+  });
 
-  const editTodo = useEditTodoMutation(
-    () => {
+  const editTodo = useMutation({
+    mutationFn: async ({ text, id }: EditTodoType) => {
+      const api = await fetch("/api/todos/edit", {
+        method: "POST",
+        body: JSON.stringify({ text, id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (api.ok) {
+        console.log('edit success');
+      }
+      if (api.status === 401) {
+        throw "Error 401";
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [TODOS_CACHE_KEY]
+      })
       setEditId(null);
       setLoading(false);
       setUpdatedTodo('');
       enqueueSnackbar('Successfully updated todo', { variant: 'success' });
     },
     onError,
-  );
+  });
 
-  const deleteTodo = useDeleteTodoMutation(
-    () => {
+  const deleteTodo = useMutation({
+    mutationFn: async (id: number) => {
+      const api = await fetch("/api/todos/delete", {
+        method: "POST",
+        body: JSON.stringify({ id: id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (api.ok) {
+        console.log('add success');
+      }
+      if (api.status === 401) {
+        throw "Error 401";
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [TODOS_CACHE_KEY]
+      })
       setLoading(false);
       enqueueSnackbar('Successfully deleted todo', { variant: 'success' });
     },
     onError,
-  );
+  });
 
   const formatDateCreated = (date: string) => {
     const newDate = new Date(date);
@@ -153,7 +236,7 @@ export default function Test() {
         </div>
         {isLoading ? null : (
           <ul role="list" className="-mb-8 w-5/12">
-            {todosData?.map((todo) => {
+            {todosData?.map((todo: any) => {
               return (
                 <li key={todo.id} className="py-4">
                   <div className="flex space-x-3 flex items-center">
