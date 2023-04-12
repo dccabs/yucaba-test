@@ -1,43 +1,43 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import Head from 'next/head'
+import Image from 'next/image'
+import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const handleAdd = async () => {
-    const test = await fetch("/api/todos/add", {
-      method: "POST",
-      body: JSON.stringify({ text: "test" }),
+    const test = await fetch('/api/todos/add', {
+      method: 'POST',
+      body: JSON.stringify({ text: 'test' }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    });
+    })
 
     if (test.ok) {
-      console.log("success");
+      console.log('success')
     }
     if (test.status === 401) {
-      console.log("error");
+      console.log('error')
     }
-  };
+  }
 
   const handleEdit = async () => {
-    const test = await fetch("/api/todos/edit", {
-      method: "POST",
-      body: JSON.stringify({ id: 1, text: "edit this" }),
+    const test = await fetch('/api/todos/edit', {
+      method: 'POST',
+      body: JSON.stringify({ id: 1, text: 'edit this' }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    });
+    })
 
     if (test.ok) {
-      console.log("success");
+      console.log('success')
     }
     if (test.status === 401) {
-      console.log("error");
+      console.log('error')
     }
-  };
+  }
 
   return (
     <>
@@ -75,31 +75,29 @@ export default function Home() {
             </li>
           </ul>
           <p>
-            Please use <span className="text-blue-600">Tailwind UI</span>{" "}
+            Please use <span className="text-blue-600">Tailwind UI</span>{' '}
             components to construct the following application. Use your best
             judgement of what components to use. If you have any questions,
             please ask.
           </p>
           <p>
             You can add yourself to my tailwind UI component account by
-            following this link:{" "}
+            following this link:{' '}
             <a
               className="text-blue-500 underline cursor-pointer"
               target="_blank"
-              href="https://tailwindui.com/teams/invite/1mpK8w8oKETlbsRqtDcyky2V1Yxy2DHj"
-            >
+              href="https://tailwindui.com/teams/invite/1mpK8w8oKETlbsRqtDcyky2V1Yxy2DHj">
               Tailwind UI
             </a>
           </p>
           <p>
-            Please install and use the{" "}
+            Please install and use the{' '}
             <a
               className="text-blue-600"
               href="https://tanstack.com/query/latest/docs/react/quick-start"
-              target="_blank"
-            >
+              target="_blank">
               React Query
-            </a>{" "}
+            </a>{' '}
             library to manage your endpoints and state.
           </p>
           <p>
@@ -108,19 +106,19 @@ export default function Home() {
           </p>
           <ul className="my-4 list-disc">
             <li>
-              /api/todos/add payload is{" "}
+              /api/todos/add payload is{' '}
               {`{
                   text: string
                 }`}
             </li>
             <li>
-              /api/todos/delete payload is{" "}
+              /api/todos/delete payload is{' '}
               {`{
                   id: number
                 }`}
             </li>
             <li>
-              /api/todos/edit payload is{" "}
+              /api/todos/edit payload is{' '}
               {`{
                   id: number,
                   text: string
@@ -145,5 +143,5 @@ export default function Home() {
         </div>
       </main>
     </>
-  );
+  )
 }

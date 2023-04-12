@@ -1,24 +1,24 @@
-import { supabase } from "../../../utils/initSupabase";
+import { supabase } from '../../../utils/initSupabase'
 
 const addTodo = async (req, res) => {
-  const { text } = req.body;
+  const { text } = req.body
 
   if (!text) {
-    return res.status(401).json({ error: { message: "must have text" } });
+    return res.status(401).json({ error: { message: 'must have text' } })
   }
 
   const { data: todo, error } = await supabase
-    .from("todos")
+    .from('todos')
     .insert([{ text }])
-    .select("*");
+    .select('*')
 
   if (todo) {
-    return res.status(200).json({ todo: todo[0] });
+    return res.status(200).json({ todo: todo[0] })
   }
 
   if (error) {
-    return res.status(401).json({ error: { message: error.message } });
+    return res.status(401).json({ error: { message: error.message } })
   }
-};
+}
 
-export default addTodo;
+export default addTodo

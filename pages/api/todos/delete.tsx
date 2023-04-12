@@ -1,27 +1,25 @@
-import { supabase } from "../../../utils/initSupabase";
+import { supabase } from '../../../utils/initSupabase'
 
 const deleteTodo = async (req, res) => {
-    const { id } = req.body;
+  const { id } = req.body
 
-    if (id) {
-        return res
-            .status(401)
-            .json({ error: { message: "must have id" } });
-    }
+  if (id) {
+    return res.status(401).json({ error: { message: 'must have id' } })
+  }
 
-    const { data: todo, error } = await supabase
-        .from("todos")
-        .delete()
-        .eq('id', id)
-        .select('*');
+  const { data: todo, error } = await supabase
+    .from('todos')
+    .delete()
+    .eq('id', id)
+    .select('*')
 
-    if (todo) {
-        return res.status(200).json({ todo: todo });
-    }
+  if (todo) {
+    return res.status(200).json({ todo: todo })
+  }
 
-    if (error) {
-        return res.status(401).json({ error: { message: error.message } });
-    }
-};
+  if (error) {
+    return res.status(401).json({ error: { message: error.message } })
+  }
+}
 
-export default deleteTodo;
+export default deleteTodo
