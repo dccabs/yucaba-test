@@ -1,23 +1,50 @@
+import { NextApiRequest, NextApiResponse } from 'next'
+
 import { supabase } from '../../../utils/initSupabase'
+import { TodoResponseType } from '@/helpers/common/types/todoType'
+import { ErrorResponse } from '@/helpers/common/types/errorResponse'
+import { editTodoValidationSchema } from '@/helpers/common/validationSchema/editTodoSchema'
+import { checkRequestMethod } from '@/helpers/client/checkRequestMethod'
+import errorHandler from '@/helpers/api/errorHandler'
 
-const addTodo = async (req, res) => {
-  const { id, text } = req.body
-
-  if (!text || !id) {
-    return res.status(401).json({ error: { message: 'must have text and id' } })
+interface CustomNextApiRequest extends NextApiRequest {
+  body: {
+    id: number
+    text: string
   }
+}
 
-  const { data: todo, error } = await supabase
-    .from('todos')
-    .upsert({ id, text })
-    .select()
+const addTodo = async (
+  req: CustomNextApiRequest,
+  res: NextApiResponse<TodoResponseType | ErrorResponse>,
+) => {
+  try {
+    const { id, text } = req.body
 
-  if (todo) {
-    return res.status(200).json({ todo: todo[0] })
-  }
+    checkRequestMethod(req.method)
 
-  if (error) {
-    return res.status(401).json({ error: { message: error.message } })
+    const parsedResult = editTodoValidationSchema.parse({ text, id })
+
+    const { data: todo, error } = await supabase
+      .from('todos')
+      .upsert({ id, text: parsedResult.text })
+      .select()
+
+    if (todo) {
+      return res.status(200).json({
+        todo: {
+          id: todo[0].id,
+          text: todo[0].text,
+          createdAt: todo[0].created_at,
+        },
+      })
+    }
+
+    if (error) {
+      return res.status(401).json({ error: { message: error.message } })
+    }
+  } catch (error) {
+    errorHandler(error, res)
   }
 }
 
