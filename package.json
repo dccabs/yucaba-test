@@ -10,6 +10,7 @@
     "prettier": "npx prettier --write ."
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.0.1",
     "@supabase/supabase-js": "^2.14.0",
     "@types/http-errors": "^2.0.1",
     "@types/node": "18.15.11",
