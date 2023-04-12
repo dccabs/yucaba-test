@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  PlusIcon,
-  ExclamationCircleIcon,
-  ArrowPathIcon,
   XMarkIcon,
   PencilIcon,
+  TrashIcon,
+  CheckIcon
 } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs';
 import { useSnackbar } from 'notistack';
@@ -47,7 +46,7 @@ export default function Test() {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (api.ok) {
         const data = await api.json();
         return data?.todos;
@@ -206,125 +205,85 @@ export default function Test() {
   const onChangeExistingTodo = (event: any) => setUpdatedTodo(event.target.value);
 
   if (isError) {
-    onError('Something went wrong'); 
+    onError('Something went wrong');
   }
 
   return (
     <>
       <main className="max-w-5xl mx-auto p-10 space-y-4 flex items-center justify-center flex-col">
         <Loading loading={loading || isLoading || fetchStatus === 'fetching'} />
-        <div className="flex rounded-md shadow-sm">
-          <div className="relative flex flex-grow items-stretch focus-within:z-10">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <PlusIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        <div className="max-w-lg w-full mx-auto bg-white shadow-md rounded-md overflow-hidden">
+          <div className="p-4">
+            <h2 className="text-lg font-medium">Todo List</h2>
+            <div className="mt-4 flex">
+              <input
+                value={newTodo}
+                onChange={onChangeNewTodo}
+                className="border-gray-300 rounded-md px-4 py-2 mr-2 flex-grow"
+                placeholder="Add new todo"
+                onKeyDown={onClickEnterInAdd}
+              />
+              <button
+                onClick={onClickAdd}
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
+              >
+                Add
+              </button>
             </div>
-            <input
-              value={newTodo}
-              onChange={onChangeNewTodo}
-              className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              placeholder="New Todo"
-              onKeyDown={onClickEnterInAdd}
-            />
           </div>
-          <button
-            onClick={onClickAdd}
-            type="button"
-            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            Add
-          </button>
-        </div>
-        {isLoading ? null : (
-          <ul role="list" className="-mb-8 w-5/12">
-            {todosData?.map((todo: any) => {
-              return (
-                <li key={todo.id} className="py-4">
-                  <div className="flex space-x-3 flex items-center">
-                    <span
-                      className={classNames(
-                        'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white bg-neutral-500'
-                      )}
-                    >
-                      <ExclamationCircleIcon className="border-solid h-5 w-5 text-white" aria-hidden="true" />
-                    </span>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        {editId === todo.id ? (
-                          <div className="mt-2 flex rounded-md shadow-sm">
-                            <div className="relative flex flex-grow items-stretch focus-within:z-10">
-                              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <ArrowPathIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                              </div>
-                              <input
-                                value={updatedTodo}
-                                onChange={onChangeExistingTodo}
-                                className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                placeholder={todo.text}
-                                onKeyDown={onClickEnterInEdit(todo.id)}
-                              />
-                            </div>
-                            <button
-                              onClick={onClickSave(todo.id)}
-                              type="button"
-                              className="relative -ml-px inline-flex items-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={onClickCancelUpdate}
-                              type="button"
-                              className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-red-600 hover:text-neutral-50"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <h3
-                              className="text-sm font-medium"
-                              onClick={onClickEdit(todo.id, todo.text)}
-                            >
-                              {todo.text}
-                            </h3>
-                            <div className='flex gap-1'>
-                              <span
-                                className={classNames(
-                                  'h-8 w-8 rounded-full flex items-center justify-center bg-gray-500 cursor-pointer'
-                                )}
-                                onClick={onClickEdit(todo.id, todo.text)}
-                              >
-                                <PencilIcon
-                                  className="border-solid h-5 w-5 text-white" aria-hidden="true"
-                                />
-                              </span>
-                              <span
-                                className={classNames(
-                                  'h-8 w-8 rounded-full flex items-center justify-center bg-red-500 cursor-pointer'
-                                )}
-                                onClick={onClickDelete(todo.id)}
-                              >
-                                <XMarkIcon
-                                  className="border-solid h-5 w-5 text-white" aria-hidden="true"
-                                />
-                              </span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      {editId === todo.id ? null : (
-                        <>
-                          <p className="text-sm text-gray-500">
-                            {formatDateCreated(todo.created_at)}
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  </div>
+          {isLoading ? null : (
+            <ul className="divide-y divide-gray-300">
+              {todosData?.map((todo: any) => (
+                <li key={todo.id} className="p-4 flex items-center">
+                  {editId === todo.id ? (
+                    <>
+                      <input
+                        value={updatedTodo}
+                        onChange={onChangeExistingTodo}
+                        className="border-gray-300 rounded-md px-4 py-2 mr-2 flex-grow"
+                        placeholder={todo.text}
+                        onKeyDown={onClickEnterInEdit(todo.id)}
+                      />
+                      <button
+                        onClick={onClickSave(todo.id)}
+                        className="text-gray-500 hover:text-gray-700 mr-2"
+                      >
+                        <CheckIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={onClickCancelUpdate}
+                        className="text-gray-500 hover:text-gray-700 mr-2"
+                      >
+                        <XMarkIcon className="h-5 w-5" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span
+                        className="flex-grow"
+                        onClick={onClickEdit(todo.id, todo.text)}
+                      >
+                        {todo.text}
+                      </span>
+                      <button
+                        onClick={onClickEdit(todo.id, todo.text)}
+                        className="text-gray-500 hover:text-gray-700 mr-2"
+                      >
+                        <PencilIcon className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={onClickDelete(todo.id)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
                 </li>
-              );
-            })}
-          </ul >
-        )}
+              ))}
+            </ul>
+          )}
+        </div >
       </main >
     </>
   );
