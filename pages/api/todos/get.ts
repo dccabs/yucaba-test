@@ -6,9 +6,13 @@ import errorHandler from '@/helpers/api/errorHandler'
 import { ErrorResponse } from '@/helpers/common/types/errorResponse'
 import { checkRequestMethod } from '@/helpers/client/checkRequestMethod'
 
+type Todos = {
+  todos: TodoType[]
+}
+
 const getTodos = async (
   req: NextApiRequest,
-  res: NextApiResponse<{ todos: TodoType[] } | ErrorResponse>,
+  res: NextApiResponse<Todos | ErrorResponse>,
 ) => {
   try {
     const { data: todos, error } = await supabase.from('todos').select('*')
@@ -16,7 +20,14 @@ const getTodos = async (
     checkRequestMethod(req.method)
 
     if (todos) {
-      return res.status(200).json({ todos })
+      const newTodos = todos.map(todo => {
+        return {
+          id: todo.id,
+          text: todo.text,
+          createdAt: todo.created_at,
+        }
+      })
+      return res.status(200).json({ todos: newTodos })
     }
 
     if (error) {
