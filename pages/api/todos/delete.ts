@@ -1,9 +1,9 @@
 import { supabase } from "../../../utils/initSupabase";
 
-const deleteTodo = async (req, res) => {
+const deleteTodo = async (req: any, res: any) => {
     const { id } = req.body;
 
-    if (id) {
+    if (!id) {
         return res
             .status(401)
             .json({ error: { message: "must have id" } });

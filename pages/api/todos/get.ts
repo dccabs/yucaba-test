@@ -1,6 +1,6 @@
 import { supabase } from "../../../utils/initSupabase";
 
-const getTodos = async (req, res) => {
+const getTodos = async (req: any, res: any) => {
   const { data: todos, error } = await supabase.from("todos").select("*");
 
   if (todos) {

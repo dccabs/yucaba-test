@@ -1,6 +1,6 @@
 import { supabase } from "../../../utils/initSupabase";
 
-const addTodo = async (req, res) => {
+const addTodo = async (req: any, res: any) => {
   const { id, text } = req.body;
 
   if (!text || !id) {
